@@ -27,7 +27,11 @@ public class BirdPlayer : MonoBehaviour
             numberOfFlaps++;
             this.gameObject.GetComponent<Rigidbody2D>().velocity = this.gameObject.GetComponent<Rigidbody2D>().velocity + new Vector2(0, jumpHeight);
         }
-      
+        if (Input.GetKeyDown("Shift")) {
+
+        
+
+        }
         
     }
 
