@@ -10,11 +10,10 @@ public class BirdPlayer : MonoBehaviour
     public float damping = 10;
     public bool infiniteFlaps = false;
     public float maxSpeed = 20;
-    public bool isActive;
+    public bool isBird;
 
 
 
-    private bool activeForm;
     private Rigidbody2D body;
     private float horizontalAxis;
     private Vector3 currentVelocity;
@@ -26,22 +25,26 @@ public class BirdPlayer : MonoBehaviour
     }
     private void Update()
     {
-        if (isActive)
-        {
+        
+        
             currentVelocity = GetComponent<Rigidbody2D>().velocity;
             horizontalAxis = Input.GetAxisRaw("Horizontal");
             if (Input.GetKeyDown("w"))
             {
-                if (infiniteFlaps)
+                if (infiniteFlaps && isBird)
                 {
-                    this.gameObject.GetComponent<Rigidbody2D>().velocity = GetComponent<Rigidbody2D>().velocity + new Vector2(0, jumpHeight);
+                   GetComponent<Rigidbody2D>().velocity = GetComponent<Rigidbody2D>().velocity + new Vector2(0, jumpHeight);
                 }
-                else if (numberOfFlaps <= 5)
+                else if (numberOfFlaps <= 5 && isBird)
                 {
-                    this.gameObject.GetComponent<Rigidbody2D>().velocity = this.gameObject.GetComponent<Rigidbody2D>().velocity + new Vector2(0, jumpHeight);
+                    GetComponent<Rigidbody2D>().velocity = GetComponent<Rigidbody2D>().velocity + new Vector2(0, jumpHeight);
                     numberOfFlaps++;
                 }
+                else if(IsGrounded() && isBird)
+            {
+                GetComponent<Rigidbody2D>().velocity = GetComponent<Rigidbody2D>().velocity + new Vector2(0, jumpHeight);
             }
+            
 
 
 
@@ -56,13 +59,11 @@ public class BirdPlayer : MonoBehaviour
         }
 
 
-        void OnCollisionEnter2D(Collision2D collision)
+        private bool IsGrounded()
         {
-            if (collision.gameObject.name == "floor")
-            {
-                numberOfFlaps = 0;
-            }
-        }
+        Debug.Log("Ground check");
+        return Physics2D.Raycast(transform.position, -Vector3.up, GetComponent<Collider2D>().bounds.extents.y + 0.1F);
+    }
 
 
 
