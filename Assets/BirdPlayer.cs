@@ -8,10 +8,11 @@ public class BirdPlayer : MonoBehaviour
     public float jumpHeight;
     public int numberOfFlaps = 0;
     private Vector3 currentVelocity;
-
-    private void Update()
+    public bool infiniteFlaps = false;
+    private bool isHuman;
+    public bool canChangeForm;
+    private void FixedUpdate()
     {
-        // Sprint: Can sprint in air. OnShiftDown increase speed, onShiftUp decrease speed
         currentVelocity = this.gameObject.GetComponent<Rigidbody2D>().velocity;
 
         if (Input.GetKeyDown("d"))
@@ -22,10 +23,16 @@ public class BirdPlayer : MonoBehaviour
         {
             this.gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(-playerSpeed, currentVelocity.y);
         }
-        if (Input.GetKeyDown("w") && numberOfFlaps < 5)
+        if (Input.GetKeyDown("w"))
         {
-            numberOfFlaps++;
-            this.gameObject.GetComponent<Rigidbody2D>().velocity = this.gameObject.GetComponent<Rigidbody2D>().velocity + new Vector2(0, jumpHeight);
+            if (infiniteFlaps) {
+                this.gameObject.GetComponent<Rigidbody2D>().velocity = this.gameObject.GetComponent<Rigidbody2D>().velocity + new Vector2(0, jumpHeight);
+            }
+            else if (numberOfFlaps<=5)
+            {
+                this.gameObject.GetComponent<Rigidbody2D>().velocity = this.gameObject.GetComponent<Rigidbody2D>().velocity + new Vector2(0, jumpHeight);
+                numberOfFlaps++;
+            }
         }
         if (Input.GetKeyDown("Shift")) {
 
