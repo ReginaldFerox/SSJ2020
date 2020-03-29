@@ -13,7 +13,7 @@ public class BirdPlayer : MonoBehaviour
     public bool isBird = false;
     public LayerMask groundLayer;
 
-
+    private bool isGrounded;
     private Rigidbody2D body;
     private float horizontalAxis;
     private Vector3 currentVelocity;
@@ -34,7 +34,7 @@ public class BirdPlayer : MonoBehaviour
     }
     private void Update()
     {
-
+        isGrounded = IsGrounded();
         Debug.DrawRay(transform.position, Vector2.right);
         currentVelocity = GetComponent<Rigidbody2D>().velocity;
             horizontalAxis = Input.GetAxisRaw("Horizontal");
@@ -49,11 +49,20 @@ public class BirdPlayer : MonoBehaviour
                     GetComponent<Rigidbody2D>().velocity = GetComponent<Rigidbody2D>().velocity + new Vector2(0, jumpHeight);
                     numberOfFlaps++;
                 }
-                else if(IsGrounded() && !isBird)
+                else if(isGrounded && !isBird)
                 {
                 GetComponent<Rigidbody2D>().velocity = GetComponent<Rigidbody2D>().velocity + new Vector2(0, jumpHeight);
                 }
             }
+
+        if (horizontalAxis==1)
+        {
+            transform.rotation = Quaternion.Euler(transform.rotation.x, 0, transform.rotation.z);
+        }
+        else if (horizontalAxis==-1)
+        {
+            transform.rotation = Quaternion.Euler(transform.rotation.x, 180, transform.rotation.z);
+        }
         if (Input.GetKeyDown("q"))
         {
             SwapForm();
@@ -89,7 +98,9 @@ public class BirdPlayer : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 1.5f, groundLayer);
         if (hit.collider != null)
         {
+            GetComponent<AnimationScript>().SetIdle();
             return true;
+           
         }
         return false;
     }
