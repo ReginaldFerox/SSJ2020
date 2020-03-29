@@ -4,15 +4,14 @@ using UnityEngine;
 
 public class DoorTeleporter : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public GameObject targetLocation;
+    public bool isUnlocked;
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        if (collision.gameObject.tag == "Player" && !isUnlocked)
+        {
+            collision.transform.position = targetLocation.transform.position;
+            Debug.Log("Player teleported");
+        }
     }
 }
