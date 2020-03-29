@@ -10,7 +10,7 @@ public class BirdPlayer : MonoBehaviour
     public float damping = 10;
     public bool infiniteFlaps = false;
     public float maxSpeed = 20;
-    public bool isBird;
+    public bool isBird = false;
     public LayerMask groundLayer;
 
 
@@ -22,6 +22,15 @@ public class BirdPlayer : MonoBehaviour
     {
         body = GetComponent<Rigidbody2D>();
         body.velocity = Vector2.ClampMagnitude(body.velocity, maxSpeed);
+        if (isBird)
+        {
+            GetComponent<SpriteRenderer>().color = Color.blue;
+        }
+        else
+        {
+            GetComponent<SpriteRenderer>().color = Color.red;
+        }
+
     }
     private void Update()
     {
@@ -29,7 +38,7 @@ public class BirdPlayer : MonoBehaviour
         Debug.DrawRay(transform.position, Vector2.right);
         currentVelocity = GetComponent<Rigidbody2D>().velocity;
             horizontalAxis = Input.GetAxisRaw("Horizontal");
-            if (Input.GetKeyDown("w"))
+            if (Input.GetKeyDown("w") || Input.GetKeyDown("space"))
             {
                 if (infiniteFlaps && isBird)
                 {
@@ -41,15 +50,13 @@ public class BirdPlayer : MonoBehaviour
                     numberOfFlaps++;
                 }
                 else if(IsGrounded() && !isBird)
-            {
+                {
                 GetComponent<Rigidbody2D>().velocity = GetComponent<Rigidbody2D>().velocity + new Vector2(0, jumpHeight);
+                }
             }
-            
-
-
-
-
-
+        if (Input.GetKeyDown("q"))
+        {
+            SwapForm();
         }
     }
 
@@ -58,12 +65,28 @@ public class BirdPlayer : MonoBehaviour
             body.velocity = new Vector2(Mathf.Lerp(horizontalAxis, horizontalAxis * playerSpeed, Time.fixedDeltaTime * damping), currentVelocity.y); //Linearlly interpolate between values to determine non-intrusive X velocity.
         }
 
+        private void SwapForm()
+        {
+            if (isBird)
+            {
+            Debug.Log("Becoming Human");
+            isBird = false;
+            GetComponent<SpriteRenderer>().color = Color.red;
+            }
 
+            else 
+            {
+            Debug.Log("Becoming Bird");
+            isBird = true;
+            GetComponent<SpriteRenderer>().color = Color.blue;
+            }
+
+        }
         private bool IsGrounded()
         {
         
         Debug.Log("Ground check");
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 1.0f, groundLayer);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 1.5f, groundLayer);
         if (hit.collider != null)
         {
             return true;
